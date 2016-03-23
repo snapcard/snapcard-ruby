@@ -1,0 +1,1 @@
+require "snapcard/client"
