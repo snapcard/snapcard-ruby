@@ -27,10 +27,11 @@ puts response.body
 response = snapcard.post path: "transfers", sourceAmount: "0.01", sourceCurrency: "BTC", dest: "email:test@snapcard.io"
 puts response.body
 ```
+Returns Net::HTTPResponse object.
 
 At the moment this client is synchronous only.
 
-Optional arguments on client initialization:
+Optional arguments on initialization:
 ```ruby
 :read_timeout # default = 20
 ```
