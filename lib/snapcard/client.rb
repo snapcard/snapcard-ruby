@@ -40,14 +40,9 @@ module Snapcard
       send_request request
     end
 
-    def assemble_request http_generic_request_class, path, params={}
+    def assemble_request http_generic_request_class, path, params
       uri = URI.parse API_BASE_URL + path
-      timestamp = (Time.now.to_f * 1000).to_i
-      if http_generic_request_class == Net::HTTP::Get
-        uri.query = URI.encode_www_form params.merge timestamp: timestamp
-      else
-        uri.query = URI.encode_www_form timestamp: timestamp
-      end
+      uri.query = build_query http_generic_request_class, params
       request = http_generic_request_class.new uri
       body = http_generic_request_class == Net::HTTP::Get ? {} : params
       request.body = body.to_json if !body.empty?
@@ -56,6 +51,13 @@ module Snapcard
         request.add_field key, value
       end
       request
+    end
+
+    def build_query http_generic_request_class, params
+      timestamp = (Time.now.to_f * 1000).to_i
+      query = {:timestamp => timestamp}
+      query.merge! params if http_generic_request_class == Net::HTTP::Get
+      URI.encode_www_form query
     end
 
     def send_request request
